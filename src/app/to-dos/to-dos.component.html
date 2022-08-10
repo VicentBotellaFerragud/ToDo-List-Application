@@ -1,0 +1,11 @@
+<div class="toDos">
+    <form (submit)="addToDo()"> 
+        <input type="text" name="inputToDo" placeholder="Enter toDo..." class="toDo-input" [(ngModel)]="inputToDo">
+        <input type="submit" value="Add toDo" class="toDo-submit">
+    </form>
+    <div *ngFor="let toDo of toDos; let i = index" class="toDo {{ (toDo.completed ? 'done' : '') }}">
+        <div class="id">{{ i }}</div>
+        <div class="content" (click)="toggleDone(i)">{{ toDo.content }}</div>
+        <button class="delete" (click)="deleteToDo(i)">Remove</button>
+    </div>
+</div>
