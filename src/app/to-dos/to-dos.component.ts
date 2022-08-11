@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { toDo } from '../../models/toDo.class';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Content } from '@angular/compiler/src/render3/r3_ast';
+import * as firebase from 'firebase/compat';
+
 
 @Component({
   selector: 'app-to-dos',
@@ -16,7 +20,7 @@ export class ToDosComponent implements OnInit {
 
   inputToDo: string = "";
 
-  constructor() { }
+  constructor(private fireStore: AngularFirestore) { }
 
   ngOnInit(): void {
     this.toDos = [
@@ -74,4 +78,24 @@ export class ToDosComponent implements OnInit {
       this.inputToDo = "";
     }
   }
+
+  add1stTodo() {
+    this.fireStore.collection('toDos').add(this.toDos[0]).then(() => {
+      console.log(this.fireStore.collection('toDos'));
+    });
+  }
+
+  add2ndTodo() {
+    this.fireStore.collection('toDos').add(this.toDos[1]).then(() => {
+      console.log(this.fireStore.collection('toDos'));
+    });
+  }
+
+  retreiveCollection() {
+    this.fireStore.collection('toDos').valueChanges().subscribe((changes: any) => {
+      console.log(changes.length);
+    }); 
+  }
+
+  //this.firestore.collection('toDos').doc(this.userId).delete(); --> to delete toDos.
 }
