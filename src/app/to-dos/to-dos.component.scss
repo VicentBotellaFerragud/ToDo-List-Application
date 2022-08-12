@@ -5,9 +5,9 @@
 	appearance: none;
 	border: none;
 	background-color: #F3F3F3;
-	margin-top: 15px;
 	font-size: 20px;
 	outline: none;
+	text-align: center;
 }
 
 .toDo-submit {
@@ -40,8 +40,8 @@
 
 	&:hover {
 		cursor: pointer;
-		background-color: #FE4880 !important;
-		color: #EEE;
+		background-color: #ffa2be !important;
+		color: #FFF;
 	}
 }
 
@@ -67,4 +67,13 @@
 
 .toDo .delete {
 	padding: 10px 15px;
+	font-weight: 700;
+	background-color: lightcoral;
+	color: #FFF;
+	border: none;
+
+	&:hover {
+		cursor: pointer;
+		background-color: red;	
+	}
 }

@@ -1,5 +1,7 @@
 <div>
-
+   
+    <!-- Normally I don't use ngModel, but formGroup, formContrlolName... and then I get the value of the formGroup in the TypeScript file 
+        so I can use it in the functions that require it. This time I did it this way (using ngModel) for a change.-->
     <form (submit)="addToDo()"> 
 
         <input type="text" name="inputToDo" placeholder="Enter toDo..." class="toDo-input" [(ngModel)]="inputToDo">
@@ -9,13 +11,13 @@
     </form>
 
     <div *ngFor="let toDo of toDos; let i = index" class="toDo {{ ( toDo.completed ? 'completed' : '' ) }}" 
-        (click)="toggleCompleted(i, toDo.customIdName)">
+        (click)="toggleCompleted(i, toDo.customIdName)" title="click on the toDo to set it to 'completed' or 'incompleted'">
         
-        <div class="id">{{ i }}</div>
+        <div class="id">{{ i + 1 }}</div>
         
         <div class="content">{{ toDo.content }}</div>
         
-        <button class="delete" (click)="deleteToDo(toDo.customIdName)">Remove</button>
+        <button class="delete" (click)="deleteToDo(toDo.customIdName)" title="click on this button to delete this toDo">Delete</button>
     
     </div>
 
