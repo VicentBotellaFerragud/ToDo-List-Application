@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { toDo } from '../../models/toDo.class';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { Content } from '@angular/compiler/src/render3/r3_ast';
 import * as firebase from 'firebase/compat';
 
@@ -12,10 +12,6 @@ import * as firebase from 'firebase/compat';
 })
 export class ToDosComponent implements OnInit {
 
-  /**
-   * This links the "toDo" class to this file. In this case we create an array of "toDo" objects. 
-   * Each object in the array has the properties of the "toDo" class.
-   */
   toDos!: toDo[];
 
   inputToDo: string = "";
@@ -23,20 +19,7 @@ export class ToDosComponent implements OnInit {
   constructor(private fireStore: AngularFirestore) { }
 
   ngOnInit(): void {
-    this.toDos = [
-      {
-        content: "First toDo",
-        completed: false
-      },
-      {
-        content: "Second toDo",
-        completed: false
-      },
-      {
-        content: "Third toDo",
-        completed: false
-      }
-    ]
+    this.retreiveCollection();
   }
 
   /**
@@ -45,11 +28,19 @@ export class ToDosComponent implements OnInit {
    * again on the same element of the list, this function will set this time the task to "uncompleted" (like in its original status).
    * @param id -This is the index of the "toDo".
    */
-  toggleDone(id: number) {
-    this.toDos.map((v, i) => {
-      if (i == id) v.completed = !v.completed;
-      return v;
-    });
+  toggleCompleted(i: number, customIdName: string | undefined) {
+
+    if (!this.toDos[i].completed) {
+      this.fireStore.collection('toDos').doc(customIdName).update({
+        "completed": true
+      });
+    } else {
+      this.fireStore.collection('toDos').doc(customIdName).update({
+        "completed": false
+      });
+    }
+
+
   }
 
   /**
@@ -58,8 +49,12 @@ export class ToDosComponent implements OnInit {
    * That way only the "toDo" on which the user clicks is not included in the new array (and therefore is deleted).
    * @param id -This is the index of the "toDo".
    */
-  deleteToDo(id: number) {
-    this.toDos = this.toDos.filter((v, i) => i !== id);
+  deleteToDo(customIdName: string | undefined) {
+    //this.toDos = this.toDos.filter((v, i) => i !== id);
+
+    console.log(customIdName);
+
+    this.fireStore.collection('toDos').doc(customIdName).delete();
   }
 
 
@@ -71,30 +66,24 @@ export class ToDosComponent implements OnInit {
     if (this.inputToDo.length == 0) {
       alert('You need to write a toDo in order to add a new element to the list');
     } else {
-      this.toDos.push({
+
+      let newToDo = {
         content: this.inputToDo,
-        completed: false
+        completed: false,
+      }
+
+      this.fireStore.collection('toDos').add(newToDo).then(() => {
+        this.inputToDo = "";
       });
-      this.inputToDo = "";
+
     }
   }
 
-  add1stTodo() {
-    this.fireStore.collection('toDos').add(this.toDos[0]).then(() => {
-      console.log(this.fireStore.collection('toDos'));
-    });
-  }
-
-  add2ndTodo() {
-    this.fireStore.collection('toDos').add(this.toDos[1]).then(() => {
-      console.log(this.fireStore.collection('toDos'));
-    });
-  }
-
   retreiveCollection() {
-    this.fireStore.collection('toDos').valueChanges().subscribe((changes: any) => {
-      console.log(changes.length);
-    }); 
+    //"{idField: 'customIdName'}"
+    this.fireStore.collection('toDos').valueChanges({ idField: 'customIdName' }).subscribe((toDos: any) => {
+      this.toDos = toDos;
+    });
   }
 
   //this.firestore.collection('toDos').doc(this.userId).delete(); --> to delete toDos.
