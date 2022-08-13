@@ -29,20 +29,18 @@ export class ToDosComponent implements OnInit {
    */
   getAllToDos() {
     
-    //Not only gets all toDos from the firestore database, but also sets for each toDo the property "customIdName" (this property comes
+    //Not only does this get all toDos from the firestore database, but also sets for each toDo the property "customIdName" (which comes
     //from the firestore database). It is important to note that, although this property comes from the firestore database, a property with
     //the same name must be defined in the toDo class so that the one coming from the firestore database is correctly assigned to each toDo.
     //In other words, if a property called 'customIdName' is not defined in the toDo class, the 'customIdName' coming from the firestore 
     //database is not assigned to the toDos in the app and, therefore, it cannot be used in other functions (as for example in the 
-    //deleteToDo function, where it is crucial to have the 'customIdName' of the to-be-deletedtoDo to be able to delete it from the 
+    //deleteToDo function, where it is crucial to have the 'customIdName' of the to-be-deleted toDo in order to delete it from the 
     //firestore database).
     this.fireStore.collection('toDos').valueChanges({ idField: 'customIdName' }).subscribe((toDos: any) => {
 
       this.toDos = toDos;
 
       this.sortToDos();
-
-      console.log(this.toDos);
 
     });
 
@@ -107,7 +105,7 @@ export class ToDosComponent implements OnInit {
   }
 
   /**
-   * Sets the state of the passed-in toDo (the toDo whose id and customIdName match the those passed in) to "completed" or "uncompleted"
+   * Sets the state of the passed-in toDo (the toDo whose id and customIdName match those passed in) to "completed" or "uncompleted"
    * depending on the current state of the toDo.
    * @param id - This is the passed-in id;
    * @param customIdName - This is the passed-in customIdName.

@@ -11,7 +11,7 @@
     </form>
 
     <div *ngFor="let toDo of toDos; let i = index" class="toDo {{ ( toDo.completed ? 'completed' : '' ) }}" 
-        (click)="toggleCompleted(i, toDo.customIdName)" title="click on the toDo to set it to 'completed' or 'incompleted'">
+        (click)="toggleCompleted(i, toDo.customIdName)" title="click on the toDo to set it to 'completed' or 'uncompleted'">
         
         <div class="id">{{ i + 1 }}</div>
         
