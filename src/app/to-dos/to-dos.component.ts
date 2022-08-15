@@ -1,17 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { toDo } from '../../models/toDo.class';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-to-dos',
   templateUrl: './to-dos.component.html',
   styleUrls: ['./to-dos.component.scss']
 })
-export class ToDosComponent implements OnInit {
+export class ToDosComponent implements OnInit, OnDestroy  {
 
   toDos!: toDo[];
 
   inputToDo: string = "";
+
+  destroy = new Subject();
 
   constructor(private fireStore: AngularFirestore) { }
 
@@ -36,7 +39,7 @@ export class ToDosComponent implements OnInit {
     //database is not assigned to the toDos in the app and, therefore, it cannot be used in other functions (as for example in the 
     //deleteToDo function, where it is crucial to have the 'customIdName' of the to-be-deleted toDo in order to delete it from the 
     //firestore database).
-    this.fireStore.collection('toDos').valueChanges({ idField: 'customIdName' }).subscribe((toDos: any) => {
+    this.fireStore.collection('toDos').valueChanges({ idField: 'customIdName' }).pipe(takeUntil(this.destroy)).subscribe((toDos: any) => {
 
       this.toDos = toDos;
 
@@ -143,6 +146,15 @@ export class ToDosComponent implements OnInit {
   deleteToDo(customIdName: string | undefined) {
 
     this.fireStore.collection('toDos').doc(customIdName).delete();
+
+  }
+
+  /**
+   * Sets the local variable "destroy" to "true" so that all observables in the component are unsubscribed when this is "destroyed".
+   */
+  ngOnDestroy(): void {
+    
+    this.destroy.next(true);
 
   }
 
